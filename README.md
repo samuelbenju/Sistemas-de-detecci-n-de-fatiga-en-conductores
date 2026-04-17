@@ -1,25 +1,45 @@
 # Sistema de detección de fatiga en conductores
 
+Aplicación web desarrollada con **Flask**, **OpenCV**, **MediaPipe**, **TensorFlow/Keras**, **SQLite** y **Pygame** para detectar fatiga en conductores mediante el análisis de la cámara web en tiempo real.
+
+El sistema integra visión por computador y un modelo de inteligencia artificial para identificar señales de somnolencia o fatiga, generando alertas sonoras y registrando eventos en una base de datos local. Además, incorpora una interfaz web con autenticación por roles, administración del dataset, comentarios, contacto y generación de reportes.
+
+---
+
+## Descripción general
+
+El proyecto fue diseñado como un prototipo funcional orientado a la prevención de accidentes por fatiga al conducir. Su funcionamiento principal consiste en capturar video desde la webcam, detectar el rostro del usuario, analizar el nivel de apertura ocular y clasificar el estado del conductor como **despierto** o **fatigado**.
+
+La detección se realiza combinando tres técnicas:
+
+1. **Haar Cascade**, para localizar el rostro dentro del frame.
+2. **MediaPipe Face Mesh**, para obtener puntos faciales y calcular el **EAR (Eye Aspect Ratio)**.
+3. **CNN (Red Neuronal Convolucional)**, para clasificar la imagen facial en las clases `fatigado` y `despierto`.
+
+---
+
 ## Tipo de aprendizaje utilizado
 
-El proyecto emplea aprendizaje supervisado, ya que el modelo de inteligencia artificial fue entrenado con imágenes previamente etiquetadas en dos clases: `fatigado` y `despierto`.
+El proyecto emplea **aprendizaje supervisado**, ya que el modelo de inteligencia artificial fue entrenado con imágenes previamente etiquetadas en dos clases:
 
-Para la detección en tiempo real se utiliza un enfoque híbrido y secuencial que combina:
+- `fatigado`
+- `despierto`
 
-- Haar Cascade, para localizar el rostro en la imagen.
-- MediaPipe Face Mesh, para calcular el EAR (Eye Aspect Ratio) y medir el nivel de apertura de los ojos.
-- Red Neuronal Convolucional (CNN), para clasificar el rostro como fatigado o despierto.
+Durante el entrenamiento, el modelo aprende patrones visuales a partir de ejemplos clasificados para luego predecir el estado del conductor en tiempo real.
 
-Por tanto, el sistema no utiliza el modelo en cascada como metodología de desarrollo, sino una arquitectura de detección compuesta por varias técnicas complementarias.
+### ¿Usa modelo en cascada?
 
-Aplicación web desarrollada con **Flask**, **OpenCV**, **MediaPipe**, **TensorFlow/Keras**, **SQLite** y **Pygame** para la detección de fatiga en conductores mediante el análisis de la cámara web en tiempo real.
+No utiliza el **modelo en cascada** como metodología de desarrollo de software.
 
-El sistema combina dos enfoques de detección:
+Sin embargo, desde el punto de vista técnico, sí implementa una **detección híbrida y secuencial**, porque combina varias etapas de análisis:
 
-1. **Modelo CNN** para clasificar el rostro como `fatigado` o `despierto`.
-2. **Cálculo del EAR (Eye Aspect Ratio)** para detectar cierre prolongado de los ojos.
+- primero detecta el rostro,
+- luego calcula el estado de los ojos,
+- y finalmente usa una CNN para reforzar la clasificación.
 
-Además, incluye una interfaz web con autenticación por roles, gestión de imágenes para el dataset, reportes y almacenamiento de eventos en base de datos.
+Por eso, la forma correcta de describirlo es:
+
+> **Sistema con aprendizaje supervisado y detección híbrida basada en visión por computador y red neuronal convolucional.**
 
 ---
 
@@ -27,22 +47,23 @@ Además, incluye una interfaz web con autenticación por roles, gestión de imá
 
 - Inicio de sesión con roles `admin` y `cliente`.
 - Panel de administración para:
-  - Subir imágenes al dataset.
-  - Eliminar imágenes del dataset.
-  - Visualizar imágenes por categoría.
-  - Generar reporte gráfico del dataset.
-  - Descargar reporte en PDF.
+  - subir imágenes al dataset,
+  - eliminar imágenes,
+  - visualizar imágenes por categoría,
+  - generar reportes gráficos,
+  - descargar reportes en PDF.
 - Panel de cliente.
 - Módulo informativo.
 - Módulo de comentarios.
 - Módulo de contacto.
-- Detección de fatiga en tiempo real con webcam.
-- Activación de alarma sonora cuando se detecta fatiga.
+- Detección de fatiga en tiempo real mediante webcam.
+- Alarma sonora cuando se detecta fatiga.
 - Registro de eventos de fatiga en base de datos SQLite.
+- Consulta del estado actual de fatiga desde una ruta web.
 
 ---
 
-## Tecnologías usadas
+## Tecnologías utilizadas
 
 - **Python 3**
 - **Flask**
@@ -55,6 +76,7 @@ Además, incluye una interfaz web con autenticación por roles, gestión de imá
 - **Matplotlib**
 - **ReportLab**
 - **Pygame**
+- **Kaggle API**
 
 ---
 
@@ -99,48 +121,51 @@ proyecto/
 Archivo principal de la aplicación web.
 
 Contiene:
-- Configuración de Flask.
-- Inicialización de la base de datos SQLite.
-- Autenticación de usuarios.
-- Panel de administrador y cliente.
-- Registro de comentarios y contactos.
-- Generación de reportes.
-- Streaming de video desde la webcam.
-- Detección de fatiga usando CNN + EAR.
-- Activación y desactivación de la alarma.
+- configuración de Flask,
+- inicialización de la base de datos SQLite,
+- autenticación de usuarios,
+- panel de administrador y cliente,
+- registro de comentarios y contactos,
+- generación de reportes,
+- streaming de video desde la webcam,
+- detección de fatiga usando CNN + EAR,
+- activación y desactivación de la alarma.
 
 ### `deteccion_webcam_ear.py`
-Script independiente para probar la detección de fatiga directamente desde la webcam, sin necesidad de ejecutar la aplicación web.
+Script independiente para probar la detección de fatiga directamente desde la webcam, sin necesidad de ejecutar la aplicación web completa.
 
 ### `proyecto.py`
-Script de entrenamiento del modelo de detección de fatiga.
+Script encargado del entrenamiento del modelo de detección de fatiga.
 
 Funciones principales:
-- Configurar autenticación con Kaggle.
-- Descargar dataset `Driver Drowsiness Dataset (DDD)`.
-- Construir dataset balanceado.
-- Integrar imágenes personalizadas.
-- Entrenar el modelo CNN.
-- Guardar el mejor modelo en `mejor_modelo_fatiga.h5`.
+- configurar autenticación con Kaggle,
+- descargar el dataset `Driver Drowsiness Dataset (DDD)`,
+- construir un dataset balanceado,
+- integrar imágenes personalizadas,
+- entrenar el modelo CNN,
+- guardar el mejor modelo entrenado.
 
 ### `modificacion.py`
-Script auxiliar para descargar y extraer un dataset adicional de rostros diversos desde Kaggle.
+Script auxiliar para descargar y extraer un dataset adicional de rostros diversos desde Kaggle, con el fin de ampliar la variedad del conjunto de imágenes.
 
 ### `kaggle.json`
 Archivo de credenciales de la API de Kaggle.
 
-> **Importante:** este archivo no debe subirse a un repositorio público por motivos de seguridad.
+> **Importante:** este archivo no debe subirse a un repositorio público por razones de seguridad.
 
 ---
 
 ## Requisitos previos
 
-Antes de ejecutar el proyecto, asegúrate de tener instalado:
+Antes de ejecutar el proyecto, se recomienda contar con:
 
 - Python 3.10 o superior
 - pip
-- Cámara web funcional
-- Dependencias del proyecto
+- webcam funcional
+- conexión a internet, si se van a descargar datasets desde Kaggle
+- modelo entrenado `mejor_modelo_fatiga.h5`
+- archivo de audio `alarma.mp3`
+- plantillas HTML necesarias dentro de la carpeta `templates`
 
 ---
 
@@ -161,13 +186,13 @@ python -m venv venv
 
 ### 3. Activar entorno virtual
 
-**Windows:**
+**Windows**
 
 ```bash
 venv\Scripts\activate
 ```
 
-**Linux / macOS:**
+**Linux / macOS**
 
 ```bash
 source venv/bin/activate
@@ -181,15 +206,15 @@ pip install flask opencv-python mediapipe numpy scipy tensorflow matplotlib repo
 
 ---
 
-## Ejecución
+## Ejecución del proyecto
 
-### Ejecutar aplicación web
+### Ejecutar la aplicación web
 
 ```bash
 python inicio.py
 ```
 
-La aplicación se ejecutará por defecto en:
+La aplicación se ejecutará, por defecto, en:
 
 ```bash
 http://127.0.0.1:5000/
@@ -207,6 +232,12 @@ python deteccion_webcam_ear.py
 python proyecto.py
 ```
 
+### Descargar dataset auxiliar de rostros
+
+```bash
+python modificacion.py
+```
+
 ---
 
 ## Usuarios por defecto
@@ -219,79 +250,80 @@ El sistema crea automáticamente los siguientes usuarios:
 | erick.trujillo | 123 | admin |
 | cliente01 | 456 | cliente |
 
-> Se recomienda reemplazar estas credenciales por contraseñas seguras y almacenar hashes en vez de texto plano.
+> Se recomienda reemplazar estas credenciales por contraseñas seguras y almacenarlas con hash en lugar de texto plano.
 
 ---
 
 ## Base de datos
 
-La aplicación utiliza `SQLite` y crea automáticamente el archivo `usuarios.db` con las tablas:
+La aplicación utiliza `SQLite` y crea automáticamente el archivo `usuarios.db` con las siguientes tablas:
 
 - `usuarios`
 - `log_fatiga`
 - `comentarios`
 - `contactos`
 
+Estas tablas permiten gestionar autenticación, almacenar eventos de fatiga y registrar información enviada por los usuarios desde la web.
+
 ---
 
 ## Flujo general del sistema
 
-1. El usuario inicia sesión.
-2. Si es administrador, accede al panel de gestión del dataset y reportes.
-3. Si es cliente, accede a su panel de usuario.
-4. El sistema activa la cámara y procesa cada frame.
-5. Se detecta fatiga mediante:
-   - Predicción del modelo CNN.
-   - Cálculo del EAR.
-6. Si se detecta fatiga:
-   - Se cambia el estado a `fatigado`.
-   - Se activa una alarma sonora.
-   - Se registra el evento en la base de datos.
-7. Si el conductor vuelve a estar despierto:
-   - Se desactiva la alarma.
-   - Se registra el cambio de estado.
+1. El usuario ingresa al sistema desde la interfaz web.
+2. Inicia sesión con un rol de administrador o cliente.
+3. Si es administrador, accede al panel de gestión del dataset y reportes.
+4. Si es cliente, accede a su panel básico.
+5. El sistema captura video desde la webcam.
+6. En cada frame:
+   - detecta el rostro,
+   - calcula el EAR,
+   - ejecuta la predicción del modelo CNN.
+7. Si se detecta fatiga:
+   - se cambia el estado a `fatigado`,
+   - se activa una alarma sonora,
+   - se registra el evento en la base de datos.
+8. Si la persona vuelve al estado normal:
+   - se desactiva la alarma,
+   - se registra el cambio de estado.
 
 ---
 
-## Limitaciones actuales
+## Estado actual del proyecto
 
-- La contraseña de los usuarios se almacena en texto plano.
-- La cámara se inicializa de manera global, lo que puede generar conflictos si hay varios accesos o si la cámara no está disponible.
-- El archivo `kaggle.json` está expuesto.
-- El sistema depende de que existan las carpetas, plantillas HTML, modelo `.h5` y audio `.mp3`.
-- No se controla adecuadamente el cierre o liberación de la cámara al terminar.
-- La función de logging intenta usar `session` dentro del generador de frames, lo cual puede generar problemas de contexto en algunos entornos Flask.
+El proyecto tiene estructura de **MVP funcional** y cuenta con componentes principales implementados. No obstante, para ejecutarlo correctamente es necesario disponer de todos los archivos complementarios, especialmente:
 
----
+- plantillas HTML,
+- modelo entrenado `.h5`,
+- archivo de audio,
+- carpetas del dataset,
+- entorno con dependencias instaladas.
 
-## Mejoras recomendadas
-
-- Implementar hash de contraseñas con `werkzeug.security`.
-- Mover `kaggle.json` fuera del repositorio.
-- Crear un archivo `requirements.txt`.
-- Separar la lógica de detección, base de datos y rutas en módulos distintos.
-- Validar tamaño y extensión de imágenes subidas.
-- Manejar correctamente la liberación de la cámara.
-- Agregar manejo de errores cuando falte el modelo, el audio o la webcam.
-- Proteger mejor las rutas administrativas.
+Por tanto, puede considerarse funcional a nivel académico y de prototipo, pero aún requiere ajustes para ser una solución robusta de producción.
 
 ---
 
-## Estado del proyecto
+## Posibles mejoras
 
-El proyecto presenta una **base funcional a nivel de código** y una arquitectura coherente para una prueba académica o prototipo. Sin embargo, para considerarse completamente funcional en un entorno real, requiere:
-
-- Plantillas HTML completas.
-- Archivo del modelo entrenado.
-- Archivo de audio de alarma.
-- Validación de dependencias y entorno.
-- Mejoras de seguridad y robustez.
-
-En su estado actual, puede considerarse un **prototipo funcional condicionado**: la lógica está implementada, pero su ejecución completa depende de archivos y recursos adicionales no incluidos en este paquete.
+- cifrar o hashear contraseñas de usuarios,
+- separar la lógica en módulos para mejorar mantenimiento,
+- agregar validaciones más estrictas de formularios y archivos,
+- manejar mejor errores de cámara o ausencia de rostro,
+- guardar métricas de desempeño del modelo,
+- incorporar historial visual de eventos,
+- desplegar la aplicación en un servidor web,
+- agregar pruebas unitarias y documentación técnica adicional.
 
 ---
 
-## Licencia
+## Consideraciones de seguridad
 
-Uso académico / prototipo.
+- No subir `kaggle.json` a repositorios públicos.
+- No dejar contraseñas en texto plano.
+- No exponer `secret_key` fija en producción.
+- Validar extensiones y tamaños de archivos subidos por los administradores.
 
+---
+
+## Conclusión
+
+Este proyecto propone una solución tecnológica orientada a la seguridad vial mediante el uso de inteligencia artificial y visión por computador. Su mayor valor está en la integración de una interfaz web, una base de datos local y un sistema de detección de fatiga en tiempo real, lo cual lo convierte en un desarrollo adecuado para fines académicos, demostrativos y de investigación aplicada.
