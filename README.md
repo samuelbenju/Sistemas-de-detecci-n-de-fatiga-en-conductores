@@ -80,7 +80,7 @@ Por eso, la forma correcta de describirlo es:
 
 ---
 
-## Estructura sugerida del proyecto
+## Estructura final del proyecto
 
 ```bash
 proyecto/
@@ -157,7 +157,7 @@ Archivo de credenciales de la API de Kaggle.
 
 ## Requisitos previos
 
-Antes de ejecutar el proyecto, se recomienda contar con:
+Antes de ejecutar el proyecto, es necesario contar con:
 
 - Python 3.10 o superior
 - pip
@@ -214,7 +214,7 @@ pip install flask opencv-python mediapipe numpy scipy tensorflow matplotlib repo
 python inicio.py
 ```
 
-La aplicación se ejecutará, por defecto, en:
+La aplicación se ejecuta, por defecto, en:
 
 ```bash
 http://127.0.0.1:5000/
